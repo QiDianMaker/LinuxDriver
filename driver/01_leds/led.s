@@ -66,8 +66,8 @@ _start:
 	 * 设置GPIO1_IO03输出低电平
 	 */
 	ldr r0, =0X0209C000	/* 寄存器GPIO1_DR */
-   ldr r1, =0		
-   str r1,[r0]
+    ldr r1, =0		
+    str r1,[r0]
 
 /*
  * @brief :	loop死循环
