@@ -1,10 +1,10 @@
 /******************************************************************************
  * filename    : main.c
  * author      : QiDianMaker
- * description : 使用 C 语言点亮开发板上的 LED 灯
+ * description : 使用 stm32 风格 C 语言来点亮开发板上的 LED 灯
  * create date : 2020-06-22
  ******************************************************************************/
-#include "main.h"
+#include "imx6ul.h"
 
 static void clk_enable(void);
 static void led_init(void);
@@ -38,13 +38,13 @@ int main(void)
 
 static void clk_enable(void)
 {
-    CCM_CCGR0 = 0xffffffff;
-    CCM_CCGR1 = 0xffffffff;
-    CCM_CCGR2 = 0xffffffff;
-    CCM_CCGR3 = 0xffffffff;
-    CCM_CCGR4 = 0xffffffff;
-    CCM_CCGR5 = 0xffffffff;
-    CCM_CCGR6 = 0xffffffff;
+    CCM->CCGR0 = 0xffffffff;
+    CCM->CCGR1 = 0xffffffff;
+    CCM->CCGR2 = 0xffffffff;
+    CCM->CCGR3 = 0xffffffff;
+    CCM->CCGR4 = 0xffffffff;
+    CCM->CCGR5 = 0xffffffff;
+    CCM->CCGR6 = 0xffffffff;
 }
 
 /*
@@ -55,7 +55,7 @@ static void clk_enable(void)
 static void led_init(void)
 {
     /* 1、设置 GPIO1_IO03 复用为 GPIO1_IO03 */
-	SW_MUX_GPIO1_IO03 = 0x5;
+	IOMUX_SW_MUX->GPIO1_IO03 = 0x5;
 
 	/* 2、配置 GPIO1_IO03 的IO属性	
      *bit [16]   : 0 HYS 关闭
@@ -67,13 +67,13 @@ static void led_init(void)
      *bit [5:3]  : 110 R0/6 驱动能力
      *bit [0]    : 0 低转换率
      */
-    SW_PAD_GPIO1_IO03 = 0x10b0;
+    IOMUX_SW_PAD->GPIO1_IO03 = 0x10b0;
 
 	/* 3、设置 GPIO1_IO03 为输出 */
-    GPIO1_GDIR = 0x8;
+    GPIO1->GDIR = 0x8;
 
     /* 4、设置 GPIO1_IO03 输出低电平，点亮 LED0 */
-    GPIO1_DR = 0x0;
+    GPIO1->DR &= ~(1 << 3);
 }
 
 /*
@@ -83,7 +83,7 @@ static void led_init(void)
  */
 static void led_on(void)
 {
-    GPIO1_DR &= ~(1 << 3);
+    GPIO1->DR &= ~(1 << 3);
 }
 
 /*
@@ -93,7 +93,7 @@ static void led_on(void)
  */
 static void led_off(void)
 {
-    GPIO1_DR |= (1 << 3);
+    GPIO1->DR |= (1 << 3);
 }
 
 /*
